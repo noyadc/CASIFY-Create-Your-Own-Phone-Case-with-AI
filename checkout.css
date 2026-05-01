@@ -1,0 +1,315 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+html, body {
+    height: 100%;
+}
+
+body {
+    background-color: #909eae;
+    background-image: linear-gradient(147deg, #909eae 0%, #a7a6ba 74%);    
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header - Same as Cart for consistency */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 5%;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-text {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+nav ul li a:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background: #00bfff;
+    left: 0;
+    bottom: -5px;
+    transition: width 0.3s ease;
+}
+
+nav ul li a:hover:after {
+    width: 100%;
+}
+
+/* Checkout Section */
+.checkout {
+    padding: 60px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex: 1;
+}
+
+.checkout h1 {
+    font-size: 32px;
+    margin-bottom: 30px;
+    font-weight: 600;
+    text-align: center;
+    color: #333;
+}
+
+.checkout-container {
+    background: #fff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    max-width: 900px;
+    margin: auto;
+}
+
+.checkout-container h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+#checkout-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+#checkout-form input, 
+#checkout-form select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+    background: #f9f9f9;
+}
+
+#checkout-form input:focus,
+#checkout-form select:focus {
+    border-color: #00bfff;
+    box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.2);
+    background: #fff;
+}
+
+/* Full-width elements */
+#checkout-form input[name="shipping_address"],
+#checkout-form select,
+.order-summary,
+.checkout-btn {
+    grid-column: 1 / -1;
+}
+
+.order-summary {
+    margin-top: 40px;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.order-summary h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.cart-items-summary {
+    margin-bottom: 20px;
+}
+
+.cart-item-summary {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 10px 0;
+}
+
+.item-name {
+    font-weight: 500;
+}
+
+.item-price {
+    font-weight: 600;
+    color: #00bfff;
+}
+
+.total-summary {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 2px solid #e0e0e0;
+}
+
+.checkout-btn {
+    background: linear-gradient(135deg, #00bfff, #0080ff);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 12px rgba(0, 191, 255, 0.2);
+}
+
+.checkout-btn:hover {
+    background: linear-gradient(135deg, #0080ff, #00bfff);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 191, 255, 0.3);
+}
+
+.checkout-btn:active {
+    transform: translateY(0);
+}
+
+/* Flash Messages */
+.flash-messages {
+    margin-bottom: 20px;
+}
+
+.flash-message {
+    background-color: #4caf50;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.2);
+}
+
+/* Footer */
+footer {
+    padding: 20px;
+    background: #333;
+    color: #fff;
+    text-align: center;
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #checkout-form {
+        grid-template-columns: 1fr;
+    }
+    
+    header {
+        flex-direction: column;
+        padding: 15px;
+    }
+    
+    nav ul {
+        margin-top: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    nav ul li {
+        margin: 5px 10px;
+    }
+    
+    .checkout-container {
+        padding: 20px;
+    }
+}
+
+/* Add this to your checkout.css file */
+
+/* Payment Method Section Improvements */
+.payment-method-container {
+    grid-column: 1 / -1;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.payment-method-container h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+#checkout-form select[name="payment_method"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 15px;
+    margin-bottom: 10px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+#checkout-form select[name="payment_method"]:focus {
+    border-color: #00bfff;
+    box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.2);
+    background-color: #fff;
+}
+
+/* Payment method options styling */
+#checkout-form select[name="payment_method"] option {
+    padding: 10px;
+    font-size: 15px;
+}

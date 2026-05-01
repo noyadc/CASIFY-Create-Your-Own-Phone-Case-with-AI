@@ -1,0 +1,611 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Poppins:wght@400;600&display=swap');
+
+/* Reset Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #f9f9f9;
+    color: #333;
+    text-align: center;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-text {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+}
+
+nav {
+    flex-grow: 1;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 20px;
+    transition: color 0.3s;
+    position: relative; /* Add this to make the pseudo-element positioning work */
+}
+
+nav ul li a:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background: #00bfff;
+    left: 0;
+    bottom: -5px;
+    transition: width 0.3s ease;
+}
+
+nav ul li a:hover:after {
+    width: 100%;
+}
+
+nav ul li a:hover {
+    color: #007bff;
+}
+
+nav ul li a img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Hero Section CSS with Continuous Motion Animation */
+.hero {
+    background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 50%, #7e3cd6 100%);
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 5%;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-text {
+    max-width: 600px;
+    text-align: left;
+    color: #fff;
+    padding: 60px 0;
+}
+
+.hero-text h1 {
+    font-size: 70px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.hero-text .highlight {
+    display: block;
+    font-size: 100px;
+}
+
+.hero-text .tagline {
+    font-size: 24px;
+    margin-bottom: 30px;
+    line-height: 1.4;
+    color: #fff;
+}
+
+.hero-features {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 30px;
+}
+
+.hero-features li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 12px;
+    color: #fff;
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+.hero-features li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #fff;
+    font-size: 20px;
+    line-height: 1.5;
+}
+
+.hero-image {
+    flex: 0 0 40%;
+    display: flex;
+    justify-content: center;
+    perspective: 1200px;
+}
+
+/* Default animation - gentle tilt */
+@keyframes gentle-tilt {
+    0% {
+        transform: rotate(-15deg) rotateY(0deg);
+    }
+    50% {
+        transform: rotate(-5deg) rotateY(10deg);
+    }
+    100% {
+        transform: rotate(-15deg) rotateY(0deg);
+    }
+}
+
+/* Hover animation - dramatic flip */
+@keyframes dramatic-flip {
+    0% {
+        transform: rotate(15deg) rotateY(0deg) scale(1.05);
+    }
+    25% {
+        transform: rotate(-5deg) rotateY(90deg) scale(1.1);
+    }
+    50% {
+        transform: rotate(-15deg) rotateY(180deg) scale(1.15);
+    }
+    75% {
+        transform: rotate(5deg) rotateY(270deg) scale(1.1);
+    }
+    100% {
+        transform: rotate(15deg) rotateY(360deg) scale(1.05);
+    }
+}
+
+.hero-image img {
+    max-width: 100%;
+    height: auto;
+    max-height: 550px;
+    filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.3));
+    transform-style: preserve-3d;
+    animation: gentle-tilt 5s ease-in-out infinite;
+}
+
+.hero-image img:hover {
+    animation: dramatic-flip 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.4)) brightness(1.05);
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 1024px) {
+    .hero-text h1 {
+        font-size: 60px;
+    }
+    
+    .hero-text .highlight {
+        font-size: 80px;
+    }
+    
+    .hero-text .tagline {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 20px;
+    }
+    
+    .hero-text {
+        text-align: center;
+        max-width: 100%;
+        padding: 30px 0;
+    }
+    
+    .hero-text h1 {
+        font-size: 50px;
+    }
+    
+    .hero-text .highlight {
+        font-size: 70px;
+    }
+    
+    .hero-features li {
+        text-align: left;
+    }
+    
+    .hero-image {
+        margin-top: 30px;
+    }
+    
+    .hero-image img {
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-text h1 {
+        font-size: 40px;
+    }
+    
+    .hero-text .highlight {
+        font-size: 50px;
+    }
+    
+    .hero-text .tagline {
+        font-size: 18px;
+    }
+    
+    .hero-features li {
+        font-size: 16px;
+    }
+}
+
+/* Best Selling Section */
+.best-selling {
+    padding: 60px;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.best-selling h2 {
+    font-size: 32px;
+    margin-bottom: 30px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.case-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.case-item {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.case-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+}
+
+.case-item img {
+    width: 180px;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.case-item img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.case-item .price {
+    margin: 15px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+.case-item button {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.case-item button:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Specific hover effect for phone case images */
+img[src$="case1.png"],
+img[src$="case2.png"],
+img[src$="case3.png"],
+img[src$="case4.png"],
+img[src$="case5.png"],
+img[src$="case6.png"] {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+img[src$="case1.png"]:hover,
+img[src$="case2.png"]:hover,
+img[src$="case3.png"]:hover,
+img[src$="case4.png"]:hover,
+img[src$="case5.png"]:hover,
+img[src$="case6.png"]:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Custom Case Section */
+.custom-case {
+    padding: 60px;
+    background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 50%, #7e3cd6 100%);
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.custom-case h2 {
+    font-size: 32px;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 20px;
+}
+
+.custom-case p {
+    margin: 15px 0;
+    font-size: 20px;
+    color: #666;
+}
+
+.custom-btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s ease, transform 0.3s ease;
+    font-size: 20px;
+}
+
+.custom-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+footer {
+    padding: 25px;
+    background: #333;
+    color: #fff;
+    text-align: center;
+    margin-top: 0; /* Changed from 60px to 0 */
+}
+
+.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-direction: column;
+    gap: 15px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+main {
+    flex-grow: 1;
+}
+/* Fade-in Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Add this to your CSS file */
+#cart-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #ffffff;
+    color: #333333;
+    padding: 16px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+    transform: translateX(120%);
+    transition: transform 0.3s ease-in-out;
+    max-width: 300px;
+    border-left: 4px solid #4CAF50;
+  }
+  
+  #cart-notification.active {
+    transform: translateX(0);
+  }
+  
+  .notification-icon {
+    background-color: #4CAF50;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-weight: bold;
+  }
+  
+  .notification-message {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  /* Optional animation to make it fade out */
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  
+  #cart-notification.fade-out {
+    animation: fadeOut 0.5s forwards;
+  }
+
+/* Custom Case Section */
+.custom-case {
+    padding: 60px;
+    background: #00bfff68;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.custom-case h2 {
+    font-size: 32px;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 20px;
+}
+
+.custom-case p {
+    margin: 15px 0;
+    font-size: 20px;
+    color: #666;
+}
+
+.custom-case ul {
+    list-style-position: inside;
+    max-width: 800px;
+    margin: 20px auto;
+    text-align: left;
+}
+
+.custom-case ul li {
+    margin-bottom: 10px;
+    white-space: nowrap; /* Prevents line breaks within list items */
+    overflow: hidden;    /* Prevents content from overflowing */
+    text-overflow: ellipsis; /* Shows ellipsis for overflowing text */
+    font-size: 16px;     /* Slightly smaller font size to fit on one line */
+}
+
+/* Case images styling as in previous code */
+.case-images {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin: 40px 0;
+}
+
+.responsive-image img {
+    width: 220px;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+}
+
+.responsive-image img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+}
+
+.static-image img {
+    width: 220px;
+    border-radius: 8px;
+}
+
+.custom-btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s ease, transform 0.3s ease;
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+.custom-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+.custom-case {
+    padding: 60px;
+    background: #00bfff68;
+    animation: fadeInUp 0.8s ease-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Adjust the case-images to display in a column or row below text */
+.case-images {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin: 40px 0 20px 0; /* Add more top margin to separate from text */
+    width: 100%;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+/* Make sure text elements have proper centering */
+.custom-case h2,
+.custom-case p,
+.custom-case ul {
+    text-align: center;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}

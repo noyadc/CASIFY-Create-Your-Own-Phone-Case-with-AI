@@ -1,0 +1,8 @@
+Flask
+python-dotenv
+supabase
+Pillow
+bcrypt
+requests
+Werkzeug
+google-generativeai

@@ -1,0 +1,171 @@
+# Casify - Custom Phone Case E-Commerce Platform
+
+Casify is a modern e-commerce platform specializing in custom phone cases. Users can either choose from pre-designed cases or create their own custom cases using image uploads or AI-generated designs.
+
+## Features
+
+- **User Authentication**
+  - Secure signup and login system
+  - Password hashing using bcrypt
+  - Session management
+
+- **Product Catalog**
+  - Pre-designed phone cases
+  - Custom case creation
+  - AI-powered design generation
+  - Image upload functionality
+
+- **Shopping Cart**
+  - Add/remove items
+  - Real-time price updates
+  - Persistent cart storage
+
+- **Checkout System**
+  - Multiple payment methods
+  - Shipping information collection
+  - Order confirmation
+
+- **Order Management**
+  - Order history
+  - Order status tracking
+  - "Buy Again" functionality
+
+- **AI Assistance**
+  - Casper, the AI assistant powered by Google Gemini
+  - Design suggestions and creative ideas
+  - Conversational support for customers
+  - Phone case customization guidance
+
+## Technologies Used
+
+- **Frontend**
+  - HTML5
+  - CSS3
+  - JavaScript
+  - Font Awesome Icons
+
+- **Backend**
+  - Python
+  - Flask
+  - Supabase (Database)
+
+- **APIs**
+  - Hugging Face API (AI Image Generation)
+  - Google Gemini AI (Chat Bot Casper)
+
+## Prerequisites
+
+Before running the application, make sure you have:
+
+- Python 3.7 or higher
+- pip (Python package manager)
+- A Supabase account
+- Hugging Face API key
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd casify
+```
+
+2. Create and activate a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+3. Install required packages:
+```bash
+pip install -r requirements.txt
+```
+
+4. Create a `.env` file in the root directory with the following variables:
+```env
+SUPABASE_URL=your_supabase_url
+SUPABASE_KEY=your_supabase_key
+HF_API_KEY=your_huggingface_api_key
+GOOGLE_API_KEY=your_google_api_key
+```
+
+## Running the Application
+
+1. Start the Flask development server:
+```bash
+python app.py
+```
+
+2. Open your web browser and navigate to:
+
+```
+
+## Usage Guide
+
+1. **Creating an Account**
+   - Click on "Login" in the navigation bar
+   - Choose "Sign up" and fill in your details
+   - Login with your credentials
+
+2. **Shopping for Cases**
+   - Browse pre-designed cases on the home page
+   - Click "Add to Cart" for desired items
+   - View cart by clicking the cart icon
+
+3. **Creating Custom Cases**
+   - Click "Create Your Own Case"
+   - Either upload an image or use AI generation
+   - Customize your design
+   - Add to cart when satisfied
+   - Chat with Casper, our AI assistant, for design ideas and inspiration
+
+4. **Checkout Process**
+   - Review items in cart
+   - Click "Proceed to Checkout"
+   - Fill in shipping information
+   - Select payment method
+   - Confirm order
+
+5. **Order Management**
+   - View past orders in "Past Orders"
+   - Track order status
+   - Reorder items using "Buy Again"
+
+## Contributing
+
+1. Fork the repository
+2. Create a new branch
+3. Make your changes
+4. Submit a pull request
+
+## Security Notes
+
+- API keys should never be committed to the repository
+- Always use environment variables for sensitive data
+- Regularly update dependencies for security patches
+
+## License
+
+[Add your license information here]
+
+## Support
+
+For support, please [create an issue](link-to-issues) or contact [your-email].
+
+## Project Structure
+
+```
+casify/
+├── app.py                 # Main application file
+├── static/               
+│   ├── css/              # Stylesheet files
+│   ├── assets/           # Images and other assets
+├── templates/            # HTML templates
+│   ├── index.html        # Home page
+│   ├── cart.html         # Shopping cart
+│   ├── checkout.html     # Checkout page
+│   ├── orders.html       # Order history
+│   └── ...
+├── requirements.txt      # Python dependencies
+└── .env                  # Environment variables
+```

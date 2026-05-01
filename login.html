@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Signup - Casify</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login-signup-style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1 class="logo-text">Casify</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <p class="flash-message">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <div class="login-box" id="login-box">
+            <h2>Welcome Back</h2>
+            <p class="subtitle">Log in to your account</p>
+            
+            <form action="{{ url_for('login') }}" method="POST">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="username" placeholder="Username" required>
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                
+                <button type="submit" class="btn">Login</button>
+                
+                <p class="signup-text">Don't have an account? <a href="#" onclick="switchToSignup()">Sign up</a></p>
+            </form>
+        </div>
+        
+        <div class="login-box hidden" id="signup-box">
+            <h2>Create Account</h2>
+            <p class="subtitle">Join our community today</p>
+            
+            <form action="{{ url_for('signup') }}" method="POST">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="first_name" placeholder="First Name" required>
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="last_name" placeholder="Last Name" required>
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-at"></i>
+                    <input type="text" name="username" placeholder="Username" required>
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                
+                <button type="submit" class="btn">Sign Up</button>
+                
+                <p class="signup-text">Already have an account? <a href="#" onclick="switchToLogin()">Login</a></p>
+            </form>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 Casify. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        function switchToSignup() {
+            document.getElementById("login-box").classList.add("hidden");
+            document.getElementById("signup-box").classList.remove("hidden");
+        }
+        function switchToLogin() {
+            document.getElementById("signup-box").classList.add("hidden");
+            document.getElementById("login-box").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>

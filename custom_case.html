@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Own Case - Casify</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/create-style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1 class="logo-text">Casify</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('view_cart') }}"><i class="fas fa-shopping-cart"></i></a></li>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('order_history') }}">Orders</a></li>
+                {% if user %}
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <section class="create-case">
+            <h1>Create Your Custom Phone Case</h1>
+            <p>Express yourself with a one-of-a-kind design</p>
+            
+            <div class="custom-options">
+                <div class="option-card upload-option">
+                    <div class="option-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h2>Upload Your Image</h2>
+                    <p>Use your favorite photo or artwork</p>
+                    <label for="image-upload" class="file-input-label">
+                        <span>Choose File</span>
+                        <input type="file" id="image-upload" accept="image/*">
+                    </label>
+                    <button onclick="uploadImage()">Preview Design</button>
+                </div>
+                
+                <div class="option-card ai-option">
+                    <div class="option-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h2>AI Image Generation</h2>
+                    <p>Describe your dream design</p>
+                    <textarea id="ai-description" placeholder="Describe your perfect case design..."></textarea>
+                    <button onclick="generateAIImage()">Generate Design</button>
+                </div>
+            </div>
+            
+            <div class="preview-section">
+                <h2>Your Custom Case</h2>
+                <div class="preview-container">
+                    <img id="custom-case-preview" src="{{ url_for('static', filename='assets/templatewhite.png') }}" alt="Custom Case Preview">
+                </div>
+                <button id="add-to-cart-btn" class="primary-button" onclick="addCustomCaseToCart()" disabled>
+                    <i class="fas fa-shopping-cart"></i> Add to Cart - $50.00
+                </button>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Casify. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Cart notification -->
+    <div id="cart-notification"></div>
+    
+    <!-- Chat widget -->
+    <div class="chat-container">
+        <button class="chat-toggle-btn">
+            <i class="fas fa-comments"></i>
+        </button>
+        
+        <div class="chat-window">
+            <div class="chat-header">
+                <h3><i class="fas fa-robot"></i> Chat with Casper</h3>
+                <button class="close-chat-btn"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="chat-messages">
+                <div class="message bot-message">
+                    <div class="message-avatar">
+                        <img src="{{ url_for('static', filename='assets/bot-avatar.png') }}" alt="Bot">
+                    </div>
+                    <div class="message-content">
+                        <p id="welcome-message">Hi{% if user %}, {{ user.first_name }}{% endif %}! How can I help with your case design today?</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" id="user-message" placeholder="Type your message...">
+                <button id="send-message-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      let currentImagePath = null;
+
+      function uploadImage() {
+    const fileInput = document.getElementById('image-upload');
+    const file = fileInput.files[0];
+    const fileInputLabel = document.querySelector('.file-input-label');
+    
+    if (!file) {
+        showNotification('Please select an image file', 'error');
+        fileInputLabel.querySelector('span').textContent = 'Choose File';
+        return;
+    }
+    
+    // Update the label to show the selected file name
+    fileInputLabel.querySelector('span').textContent = file.name;
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    // Show loading state
+    document.getElementById('custom-case-preview').src = "{{ url_for('static', filename='assets/loading.gif') }}";
+    fileInputLabel.classList.add('uploading');
+    
+    fetch('{{ url_for("upload_image") }}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Remove uploading class
+        fileInputLabel.classList.remove('uploading');
+        
+        if (data.success) {
+            document.getElementById('custom-case-preview').src = data.image_path;
+            currentImagePath = data.image_path;
+            document.getElementById('add-to-cart-btn').disabled = false;
+            showNotification('Image uploaded successfully!', 'success');
+        } else {
+            if (data.message === 'Please login to upload images') {
+                window.location.href = '{{ url_for("login") }}';
+            } else {
+                showNotification(data.message, 'error');
+                document.getElementById('custom-case-preview').src = "{{ url_for('static', filename='assets/templatewhite.png') }}";
+                // Reset file input label
+                fileInputLabel.querySelector('span').textContent = 'Choose File';
+            }
+        }
+    })
+    .catch(error => {
+        // Remove uploading class
+        fileInputLabel.classList.remove('uploading');
+        
+        console.error('Error:', error);
+        showNotification('Upload failed. Please try again.', 'error');
+        document.getElementById('custom-case-preview').src = "{{ url_for('static', filename='assets/templatewhite.png') }}";
+        // Reset file input label
+        fileInputLabel.querySelector('span').textContent = 'Choose File';
+    });
+}
+
+// Add event listener to file input to update label when a file is selected
+document.getElementById('image-upload').addEventListener('change', function() {
+    const fileInputLabel = document.querySelector('.file-input-label');
+    const file = this.files[0];
+    
+    if (file) {
+        fileInputLabel.querySelector('span').textContent = file.name;
+    } else {
+        fileInputLabel.querySelector('span').textContent = 'Choose File';
+    }
+});
+
+function generateAIImage() {
+    const prompt = document.getElementById('ai-description').value;
+    
+    if (!prompt) {
+        showNotification('Please enter a description for your design', 'error');
+        return;
+    }
+    
+    // Disable button and show loading state
+    const generateButton = document.querySelector('button[onclick="generateAIImage()"]');
+    const originalButtonText = generateButton.textContent;
+    generateButton.disabled = true;
+    generateButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+    
+    // Show loading indicator in preview
+    document.getElementById('custom-case-preview').src = "{{ url_for('static', filename='assets/loading.gif') }}";
+    
+    fetch('{{ url_for("generate_ai_image") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt: prompt })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Reset button state
+        generateButton.disabled = false;
+        generateButton.textContent = originalButtonText;
+        
+        if (data.success) {
+            document.getElementById('custom-case-preview').src = data.image_path;
+            currentImagePath = data.image_path;
+            document.getElementById('add-to-cart-btn').disabled = false;
+            showNotification('Design generated successfully!', 'success');
+        } else {
+            if (data.message === 'Please login to generate images') {
+                window.location.href = '{{ url_for("login") }}';
+            } else {
+                showNotification(data.message, 'error');
+                document.getElementById('custom-case-preview').src = "{{ url_for('static', filename='assets/templatewhite.png') }}";
+            }
+        }
+    })
+    .catch(error => {
+        // Reset button state
+        generateButton.disabled = false;
+        generateButton.textContent = originalButtonText;
+        
+        console.error('Error:', error);
+        document.getElementById('custom-case-preview').src = "{{ url_for('static', filename='assets/templatewhite.png') }}";
+        showNotification('Generation failed. Please try again.', 'error');
+    });
+}
+
+function showNotification(message, type = 'success') {
+    const notification = document.getElementById('cart-notification');
+    
+    const iconClass = type === 'success' ? 'fa-check' : 'fa-exclamation-circle';
+    const typeClass = type === 'success' ? 'success' : 'error';
+    
+    notification.innerHTML = `
+        <div class="notification-icon ${typeClass}">
+            <i class="fas ${iconClass}"></i>
+        </div>
+        <div class="notification-message">${message}</div>
+    `;
+    
+    notification.className = `notification ${typeClass} active`;
+    
+    setTimeout(() => {
+        notification.classList.remove('active');
+    }, 3000);
+}
+
+function addCustomCaseToCart() {
+    if (!currentImagePath) {
+        showNotification('Please upload or generate an image first', 'error');
+        return;
+    }
+    
+    // Show loading state on button
+    const cartButton = document.getElementById('add-to-cart-btn');
+    const originalButtonText = cartButton.innerHTML;
+    cartButton.disabled = true;
+    cartButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+    
+    fetch('{{ url_for("add_to_cart") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            case_type: 'custom',
+            image_path: currentImagePath,
+            price: 50.00,
+            quantity: 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Reset button state
+        cartButton.disabled = false;
+        cartButton.innerHTML = originalButtonText;
+        
+        if (data.success) {
+            showNotification('Custom case added to cart!');
+        } else {
+            if (data.message === 'Please login to add items to cart') {
+                window.location.href = '{{ url_for("login") }}';
+            } else {
+                showNotification(data.message, 'error');
+            }
+        }
+    })
+    .catch(error => {
+        // Reset button state
+        cartButton.disabled = false;
+        cartButton.innerHTML = originalButtonText;
+        
+        console.error('Error:', error);
+        showNotification('Failed to add to cart. Please try again.', 'error');
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const chatToggleBtn = document.querySelector('.chat-toggle-btn');
+    const chatWindow = document.querySelector('.chat-window');
+    const closeBtn = document.querySelector('.close-chat-btn');
+    const sendBtn = document.getElementById('send-message-btn');
+    const userInput = document.getElementById('user-message');
+    const chatMessages = document.querySelector('.chat-messages');
+    
+    // Toggle chat window
+    chatToggleBtn.addEventListener('click', function() {
+        chatWindow.classList.toggle('active');
+        if (chatWindow.classList.contains('active')) {
+            userInput.focus();
+        }
+    });
+    
+    // Close chat window
+    closeBtn.addEventListener('click', function() {
+        chatWindow.classList.remove('active');
+    });
+    
+    // Send message when button is clicked
+    sendBtn.addEventListener('click', sendMessage);
+    
+    // Send message when Enter key is pressed
+    userInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+    
+    function sendMessage() {
+        const message = userInput.value.trim();
+        if (message) {
+            // Add user message to chat
+            addMessage(message, 'user');
+            userInput.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Send message to backend and get response
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                // Add bot response to chat
+                if (data.success) {
+                    addMessage(data.response, 'bot');
+                } else {
+                    addMessage("Sorry, I couldn't process your request. Please try again.", 'bot');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                removeTypingIndicator();
+                addMessage("Sorry, there was an error. Please try again later.", 'bot');
+            });
+        }
+    }
+    
+    function addMessage(text, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}-message`;
+        
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = 'message-avatar';
+        
+        const avatarImg = document.createElement('img');
+        if (sender === 'bot') {
+            avatarImg.src = "{{ url_for('static', filename='assets/bot-avatar.png') }}";
+            avatarImg.alt = "Bot";
+        } else {
+            avatarImg.src = "{{ url_for('static', filename='assets/user-avatar.png') }}";
+            avatarImg.alt = "User";
+        }
+        
+        avatarDiv.appendChild(avatarImg);
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        
+        const paragraph = document.createElement('p');
+        paragraph.textContent = text;
+        
+        contentDiv.appendChild(paragraph);
+        messageDiv.appendChild(avatarDiv);
+        messageDiv.appendChild(contentDiv);
+        
+        chatMessages.appendChild(messageDiv);
+        
+        // Scroll to the bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    function showTypingIndicator() {
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'typing-indicator';
+        typingDiv.id = 'typing-indicator';
+        
+        for (let i = 0; i < 3; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'typing-dot';
+            typingDiv.appendChild(dot);
+        }
+        
+        chatMessages.appendChild(typingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    function removeTypingIndicator() {
+        const typingIndicator = document.getElementById('typing-indicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
+    }
+});
+    </script>
+</body>
+</html>

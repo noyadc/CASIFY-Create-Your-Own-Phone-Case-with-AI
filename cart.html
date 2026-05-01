@@ -1,0 +1,214 @@
+<!-- cart.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - Casify</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cart-style.css') }}">
+    <style>
+        /* Cart Notification Styles */
+        #cart-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #ffffff;
+            color: #333333;
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            transform: translateX(120%);
+            transition: transform 0.3s ease-in-out;
+            max-width: 300px;
+            border-left: 4px solid #FF5722;
+        }
+
+        #cart-notification.active {
+            transform: translateX(0);
+        }
+
+        .notification-icon {
+            background-color: #FF5722;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: bold;
+        }
+
+        .notification-message {
+            font-size: 16px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1 class="logo-text">Casify</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('custom_case') }}">Create Your Own Case</a></li>
+                <li><a href="{{ url_for('order_history') }}">Past Orders</a></li>
+                {% if user %}
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="cart">
+        <h1>Your Shopping Cart</h1>
+        
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for message in messages %}
+                    {% if message != "Login successful!" %}
+                        <p class="flash-message">{{ message }}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+        
+        <div class="cart-container">
+            {% if cart_items|length == 0 %}
+                <p id="empty-cart-message">Your cart is empty.</p>
+            {% else %}
+                <div class="cart-items">
+                    {% for item in cart_items %}
+                        <div class="cart-item" id="cart-item-{{ item.id }}">
+                            <div class="item-image">
+                                {% if item.image_path %}
+                                    <img src="{{ item.image_path }}" alt="Case Preview">
+                                {% else %}
+                                    <img src="{{ url_for('static', filename='assets/case' ~ item.case_id ~ '.png') }}" alt="Case {{ item.case_id }}">
+                                {% endif %}
+                            </div>
+                            <div class="item-details">
+                                <h3>{{ "Custom Case" if item.case_type == "custom" else "Case " ~ item.case_id }}</h3>
+                                <p>${{ "%.2f"|format(item.price) }}</p>
+                            </div>
+                            <div class="item-actions">
+                                <button class="remove-btn" onclick="removeFromCart({{ item.id }})">Remove</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="cart-summary">
+                    <h2>Total: $<span id="total-price">{{ "%.2f"|format(total_price) }}</span></h2>
+                    <a href="{{ url_for('checkout') }}" class="checkout-btn">Proceed to Checkout</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+    
+    <footer>
+        <p>&copy; 2025 Casify. All Rights Reserved.</p>
+    </footer>
+    
+    <script>
+        // Cart notification function
+        function showCartNotification(message = "Item removed from cart", isRemoval = true) {
+            // Create notification element if it doesn't exist
+            let notification = document.getElementById('cart-notification');
+            if (!notification) {
+                notification = document.createElement('div');
+                notification.id = 'cart-notification';
+                document.body.appendChild(notification);
+            }
+            
+            // Set the message with a different icon for removal
+            notification.innerHTML = `
+                <div class="notification-icon">${isRemoval ? '✓' : '✓'}</div>
+                <div class="notification-message">${message}</div>
+            `;
+            
+            // Set styling for removal notification (orange) vs addition (green)
+            const iconElement = notification.querySelector('.notification-icon');
+            if (isRemoval) {
+                notification.style.borderLeftColor = '#FF5722'; // Orange for removal
+                iconElement.style.backgroundColor = '#FF5722';
+            } else {
+                notification.style.borderLeftColor = '#4CAF50'; // Green for addition
+                iconElement.style.backgroundColor = '#4CAF50';
+            }
+            
+            // Add active class to trigger animation
+            notification.classList.add('active');
+            
+            // Remove after timeout
+            setTimeout(() => {
+                notification.classList.remove('active');
+            }, 3000);
+        }
+
+        function removeFromCart(itemId) {
+            fetch(`{{ url_for('remove_from_cart', item_id=0) }}`.replace('0', itemId), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show removal notification
+                    showCartNotification('Item removed from cart', true);
+                    
+                    // Remove the item from the DOM
+                    const itemElement = document.getElementById(`cart-item-${itemId}`);
+                    itemElement.parentNode.removeChild(itemElement);
+                    
+                    // Recalculate total
+                    const remainingItems = document.querySelectorAll('.cart-item');
+                    if (remainingItems.length === 0) {
+                        document.querySelector('.cart-items').innerHTML = '';
+                        document.querySelector('.cart-summary').innerHTML = '';
+                        const emptyMessage = document.getElementById('empty-cart-message');
+                        if (emptyMessage) {
+                            emptyMessage.style.display = 'block';
+                        } else {
+                            // Create empty cart message if it doesn't exist
+                            const cartContainer = document.querySelector('.cart-container');
+                            const newEmptyMessage = document.createElement('p');
+                            newEmptyMessage.id = 'empty-cart-message';
+                            newEmptyMessage.textContent = 'Your cart is empty.';
+                            cartContainer.appendChild(newEmptyMessage);
+                        }
+                    } else {
+                        // Update the total (this is a simplified approach, a real app would recalculate from server data)
+                        fetch(`{{ url_for('view_cart') }}`)
+                        .then(response => response.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const totalPrice = doc.getElementById('total-price').textContent;
+                            document.getElementById('total-price').textContent = totalPrice;
+                        });
+                    }
+                } else {
+                    // Show error notification
+                    showCartNotification('Error: ' + data.message, true);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showCartNotification('Error removing item from cart', true);
+            });
+        }
+    </script>
+</body>
+</html>

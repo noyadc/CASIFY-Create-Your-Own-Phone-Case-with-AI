@@ -1,0 +1,86 @@
+<!-- checkout.html (continued) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Casify</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/checkout.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1 class="logo-text">Casify</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('view_cart') }}">Back to Cart</a></li>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                {% if user %}
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="checkout">
+        <h1>Checkout</h1>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <p class="flash-message">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <div class="checkout-container">
+            <h2>Shipping Information</h2>
+            <form id="checkout-form" action="{{ url_for('checkout') }}" method="POST">
+                <input type="text" name="full_name" placeholder="Full Name" required>
+                <input type="text" name="shipping_address" placeholder="Address" required>
+                <input type="text" name="city" placeholder="City" required>
+                <input type="text" name="postal_code" placeholder="Postal Code" required>
+                <input type="tel" name="phone" placeholder="Phone Number" required>
+                
+<!-- Replace the Payment Method section in checkout.html with this: -->
+
+<div class="payment-method-container">
+    <h2>Payment Method</h2>
+    <select name="payment_method">
+        <option value="credit_card">Credit Card</option>
+        <option value="paypal">PayPal</option>
+        <option value="cash_on_delivery">Cash on Delivery</option>
+    </select>
+</div>
+                
+                <div class="order-summary">
+                    <h3>Order Summary</h3>
+                    <div class="cart-items-summary">
+                        {% for item in cart_items %}
+                            <div class="cart-item-summary">
+                                <span class="item-name">{{ "Custom Case" if item.case_type == "custom" else "Case " ~ item.case_id }}</span>
+                                <span class="item-price">${{ "%.2f"|format(item.price) }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="total-summary">
+                        <span>Total:</span>
+                        <span>${{ "%.2f"|format(total_price) }}</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="checkout-btn">Place Order</button>
+            </form>
+        </div>
+    </section>
+    
+    <footer>
+        <p>&copy; 2025 Casify. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

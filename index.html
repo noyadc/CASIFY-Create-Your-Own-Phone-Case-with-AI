@@ -1,0 +1,242 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casify - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1 class="logo-text">Casify</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('view_cart') }}"><i class="fas fa-shopping-cart"></i></a></li>
+                <li><a href="{{ url_for('custom_case') }}">Create Your Own Case</a></li>
+                <li><a href="{{ url_for('order_history') }}">Past Orders</a></li>
+                {% if user %}
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    
+<!-- Hero Section HTML -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1>Welcome to <span class="highlight">CASIFY</span></h1>
+            <p class="tagline">Express your style with Casify's premium quality, fully customizable phone cases.</p>
+            <ul class="hero-features">
+                <li>Military-grade drop protection up to 10 feet</li>
+                <li>High Quality cases with upto 5 year warranty</li>
+                <li>Choose from the best selling cases created by our designers</li>
+                <li>Use AI image generation to create unique designs or Upload your own photos for a personal touch</li>
+                <li>Fast shipping</li>
+            </ul>
+        </div>
+        <div class="hero-image">
+            <img src="{{ url_for('static', filename='assets/custom-case.png') }}" alt="Custom Phone Case">
+        </div>
+    </div>
+</section>
+    
+    <section class="best-selling">
+        <h2>Best Selling Cases</h2>
+        <div class="case-grid">
+            <div class="case-item">
+                <img src="{{ url_for('static', filename='assets/case1.png') }}" alt="Case 1">
+                <p class="price">$25.00</p>
+                <button data-image="{{ url_for('static', filename='assets/case1.png') }}" 
+                        onclick="addToCart(1, 'standard', this.getAttribute('data-image'), 25.00)">
+                    Add to Cart
+                </button>
+            </div>
+            <div class="case-item">
+                <img src="{{ url_for('static', filename='assets/case2.png') }}" alt="Case 2">
+                <p class="price">$30.00</p>
+                <button data-image="{{ url_for('static', filename='assets/case2.png') }}" 
+                        onclick="addToCart(2, 'standard', this.getAttribute('data-image'), 30.00)">
+                    Add to Cart
+                </button>
+            </div>
+            <div class="case-item">
+                <img src="{{ url_for('static', filename='assets/case3.png') }}" alt="Case 3">
+                <p class="price">$28.00</p>
+                <button data-image="{{ url_for('static', filename='assets/case3.png') }}" 
+                        onclick="addToCart(3, 'standard', this.getAttribute('data-image'), 28.00)">
+                    Add to Cart
+                </button>
+            </div>
+            <div class="case-item">
+                <img src="{{ url_for('static', filename='assets/case4.png') }}" alt="Case 4">
+                <p class="price">$25.00</p>
+                <button data-image="{{ url_for('static', filename='assets/case4.png') }}" 
+                        onclick="addToCart(4, 'standard', this.getAttribute('data-image'), 25.00)">
+                    Add to Cart
+                </button>
+            </div>
+            <div class="case-item">
+                <img src="{{ url_for('static', filename='assets/case5.png') }}" alt="Case 5">
+                <p class="price">$28.00</p>
+                <button data-image="{{ url_for('static', filename='assets/case5.png') }}" 
+                        onclick="addToCart(5, 'standard', this.getAttribute('data-image'), 28.00)">
+                    Add to Cart
+                </button>
+            </div>
+            <div class="case-item">
+                <img src="{{ url_for('static', filename='assets/case6.png') }}" alt="Case 6">
+                <p class="price">$30.00</p>
+                <button data-image="{{ url_for('static', filename='assets/case6.png') }}" 
+                        onclick="addToCart(6, 'standard', this.getAttribute('data-image'), 30.00)">
+                    Add to Cart
+                </button>
+            </div>
+            <div class="case-item">
+                <img src="{{ url_for('static', filename='assets/case7.png') }}" alt="Case 7">
+                <p class="price">$28.00</p>
+                <button data-image="{{ url_for('static', filename='assets/case7.png') }}" 
+                        onclick="addToCart(7, 'standard', this.getAttribute('data-image'), 28.00)">
+                    Add to Cart
+                </button>
+            </div>
+            <div class="case-item">
+                <img src="{{ url_for('static', filename='assets/case8.png') }}" alt="Case 8">
+                <p class="price">$30.00</p>
+                <button data-image="{{ url_for('static', filename='assets/case8.png') }}" 
+                        onclick="addToCart(8, 'standard', this.getAttribute('data-image'), 30.00)">
+                    Add to Cart
+                </button>
+            </div>
+            <div class="case-item">
+                <img src="{{ url_for('static', filename='assets/case9.png') }}" alt="Case 9">
+                <p class="price">$25.00</p>
+                <button data-image="{{ url_for('static', filename='assets/case9.png') }}" 
+                        onclick="addToCart(9, 'standard', this.getAttribute('data-image'), 25.00)">
+                    Add to Cart
+                </button>
+            </div>
+            <div class="case-item">
+                <img src="{{ url_for('static', filename='assets/case10.png') }}" alt="Case 10">
+                <p class="price">$29.00</p>
+                <button data-image="{{ url_for('static', filename='assets/case10.png') }}" 
+                        onclick="addToCart(10, 'standard', this.getAttribute('data-image'), 29.00)">
+                    Add to Cart
+                </button>
+            </div>
+            <div class="case-item">
+                <img src="{{ url_for('static', filename='assets/case11.png') }}" alt="Case 11">
+                <p class="price">$25.00</p>
+                <button data-image="{{ url_for('static', filename='assets/case11.png') }}" 
+                        onclick="addToCart(11, 'standard', this.getAttribute('data-image'), 25.00)">
+                    Add to Cart
+                </button>
+            </div>
+            <div class="case-item">
+                <img src="{{ url_for('static', filename='assets/case12.png') }}" alt="Case 12">
+                <p class="price">$28.00</p>
+                <button data-image="{{ url_for('static', filename='assets/case12.png') }}" 
+                        onclick="addToCart(12, 'standard', this.getAttribute('data-image'), 28.00)">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <section class="custom-case">
+        <h2>Create Your Own Case</h2>
+        <p>Upload your image or use our AI Image Generator to design a unique phone case.</p>
+        <ul>
+            <li>High Quality Case with Scratch and Fingerprint Resistant Coating</li>
+            <li>Upload your own image or use our AI Image Generator</li>
+            <li>Out of Ideas? Use our Assistant Casper to help design your case</li>
+            <li>5 Year Warranty</li>
+            <li>Fast shipping</li>
+        </ul>
+        
+        <div class="case-images">
+            <div class="responsive-image">
+                <img src="{{ url_for('static', filename='assets/image.jpg') }}" alt="Custom Case Example 1">
+            </div>
+            <div class="static-image">
+                <img src="{{ url_for('static', filename='assets/arrow.png') }}" alt="Custom Case Example 2">
+            </div>
+            <div class="responsive-image">
+                <img src="{{ url_for('static', filename='assets/custom.png') }}" alt="Custom Case Example 3">
+            </div>
+        </div>
+        
+        <a href="{{ url_for('custom_case') }}" class="custom-btn">Get Started</a>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Casify. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Cart notification function
+        function showCartNotification(message = "Added to cart!") {
+            // Create notification element if it doesn't exist
+            let notification = document.getElementById('cart-notification');
+            if (!notification) {
+                notification = document.createElement('div');
+                notification.id = 'cart-notification';
+                document.body.appendChild(notification);
+            }
+            
+            // Set the message
+            notification.innerHTML = `
+                <div class="notification-icon">✓</div>
+                <div class="notification-message">${message}</div>
+            `;
+            
+            // Add active class to trigger animation
+            notification.classList.add('active');
+            
+            // Remove after timeout
+            setTimeout(() => {
+                notification.classList.remove('active');
+            }, 3000);
+        }
+
+        function addToCart(caseId, caseType, imagePath, price) {
+            fetch('{{ url_for("add_to_cart") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    case_id: caseId,
+                    case_type: caseType,
+                    image_path: imagePath,
+                    price: price,
+                    quantity: 1
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Replace alert with the new notification
+                    showCartNotification('Added to cart!');
+                } else {
+                    if (data.message === 'Please login to add items to cart') {
+                        window.location.href = '{{ url_for("login") }}';
+                    } else {
+                        showCartNotification('Error: ' + data.message);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showCartNotification('Error adding to cart');
+            });
+        }
+    </script>
+</body>
+</html>

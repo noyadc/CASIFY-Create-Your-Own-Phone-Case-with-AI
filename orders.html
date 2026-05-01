@@ -1,0 +1,258 @@
+<!-- orders.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Past Orders - Casify</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/orders-style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1 class="logo-text">Casify</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('view_cart') }}"><i class="fas fa-shopping-cart"></i></a></li>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('custom_case') }}">Create Your Own Case</a></li>
+                {% if user %}
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    
+    <!-- Cart notification -->
+    <div id="cart-notification">
+        <div class="notification-icon">✓</div>
+        <div class="notification-message">Items added to cart</div>
+    </div>
+    
+    <section class="past-orders">
+        <h1>Your Past Orders</h1>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <p class="flash-message">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <!-- Order navigation will be inserted here via JavaScript -->
+        
+        <div class="orders-container">
+            {% if orders|length == 0 %}
+                <p id="no-orders-message">You have no past orders.</p>
+            {% else %}
+                <div class="orders-list">
+                    {% for order in orders %}
+                        <div class="order-item" id="order-{{ loop.index }}">
+                            <div class="order-header">
+                                <h3>Order #{{ order.id }}</h3>
+                                <p class="order-date">{{ order.created_at|format_datetime }}</p>
+                                <p class="order-status">{{ order.status|upper }}</p>
+                                <button class="buy-again-btn" data-order-id="{{ order.id }}">Buy Again</button>
+                            </div>
+                            <div class="order-details">
+                                <p><strong>Total:</strong> ${{ "%.2f"|format(order.total_price) }}</p>
+                                <p><strong>Shipping:</strong> {{ order.shipping_address }}</p>
+                                <p><strong>Payment:</strong> {{ order.payment_method|replace('_', ' ')|title }}</p>
+                            </div>
+                            <div class="order-items">
+                                <h4>Items:</h4>
+                                <ul class="order-items-list">
+                                    {% if order.order_items and order.order_items|length > 0 %}
+                                        {% for item in order.order_items %}
+                                            <li class="order-item-entry">
+                                                {% if item.image_path %}
+                                                    <img src="{{ item.image_path }}" alt="Case Image" class="order-item-image">
+                                                {% endif %}
+                                                <div class="order-item-details">
+                                                    {% if item.case_type == "custom" %}
+                                                        <p class="item-name">Custom Case</p>
+                                                        <p class="item-price">${{ "%.2f"|format(item.price) }}</p>
+                                                    {% else %}
+                                                        <p class="item-name">Case {{ item.case_id }}</p>
+                                                        <p class="item-price">${{ "%.2f"|format(item.price) }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    {% else %}
+                                        <li>No items found</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+    
+    <!-- Back to top button -->
+    <div class="back-to-top">↑</div>
+    
+    <footer>
+        <p>&copy; 2025 Casify. All Rights Reserved.</p>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add status color classes
+            const statusTags = document.querySelectorAll('.order-status');
+            statusTags.forEach(tag => {
+                const status = tag.textContent.toLowerCase();
+                if (status.includes('delivered')) {
+                    tag.classList.add('delivered');
+                } else if (status.includes('processing')) {
+                    tag.classList.add('processing');
+                } else if (status.includes('shipped')) {
+                    tag.classList.add('shipped');
+                }
+            });
+            
+            // Notification functions
+            function showNotification(message) {
+                const notification = document.getElementById('cart-notification');
+                const messageEl = notification.querySelector('.notification-message');
+                
+                // Set message
+                messageEl.textContent = message;
+                
+                // Show notification
+                notification.classList.add('active');
+                
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    notification.classList.add('fade-out');
+                    setTimeout(() => {
+                        notification.classList.remove('active');
+                        notification.classList.remove('fade-out');
+                    }, 500);
+                }, 3000);
+            }
+            
+            // Add buy again functionality
+            const buyAgainButtons = document.querySelectorAll('.buy-again-btn');
+            buyAgainButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const orderId = this.getAttribute('data-order-id');
+                    
+                    // Show loading state
+                    this.innerHTML = '<span class="loading-spinner"></span>Adding...';
+                    this.disabled = true;
+                    
+                    // Send request to add items to cart
+                    fetch(`/cart/buy-again/${orderId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Show success notification
+                            showNotification(data.message);
+                            
+                            // Reset button
+                            this.textContent = 'Buy Again';
+                            this.disabled = false;
+                            
+                            // Redirect to cart after a short delay
+                            setTimeout(() => {
+                                window.location.href = data.redirect;
+                            }, 1500);
+                        } else {
+                            // Show error notification
+                            showNotification(data.message || 'An error occurred');
+                            
+                            // Reset button
+                            this.textContent = 'Buy Again';
+                            this.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification('An error occurred. Please try again.');
+                        
+                        // Reset button
+                        this.textContent = 'Buy Again';
+                        this.disabled = false;
+                    });
+                });
+            });
+            
+            // Add order navigation
+            const orderItems = document.querySelectorAll('.order-item');
+            if (orderItems.length > 1) {
+                createOrderNavigation(orderItems);
+            }
+            
+            // Back to top functionality
+            const backToTopButton = document.querySelector('.back-to-top');
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
+                }
+            });
+            
+            backToTopButton.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Create order navigation
+        function createOrderNavigation(orderItems) {
+            const navigation = document.createElement('div');
+            navigation.className = 'orders-navigation';
+            
+            const navContent = document.createElement('div');
+            navContent.className = 'orders-navigation-content';
+            
+            const navTitle = document.createElement('h3');
+            navTitle.textContent = 'Order Navigation';
+            navContent.appendChild(navTitle);
+            
+            const navList = document.createElement('ul');
+            navList.className = 'orders-navigation-list';
+            
+            orderItems.forEach((item) => {
+                const orderId = item.querySelector('.order-header h3').textContent;
+                const navItem = document.createElement('li');
+                const navLink = document.createElement('a');
+                navLink.href = `#${item.id}`;
+                navLink.textContent = orderId;
+                navLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    item.scrollIntoView({ behavior: 'smooth' });
+                });
+                navItem.appendChild(navLink);
+                navList.appendChild(navItem);
+            });
+            
+            navContent.appendChild(navList);
+            navigation.appendChild(navContent);
+            
+            // Insert the navigation before the orders container
+            const ordersContainer = document.querySelector('.orders-container');
+            ordersContainer.parentNode.insertBefore(navigation, ordersContainer);
+        }
+    </script>
+</body>
+</html>

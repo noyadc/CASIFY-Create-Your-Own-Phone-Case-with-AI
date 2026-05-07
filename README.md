@@ -1,6 +1,4 @@
 # CASIFY-Create-Your-Own-Phone-Case-with-AI
-CASIFY – Create Your Own Phone Case with AI
-
 CASIFY is an AI-powered web application that allows users to design personalized phone cases effortlessly. Users can generate unique designs using AI or choose from trendy pre-made templates. The platform also includes a 3D preview system, a virtual assistant, and the ability to showcase or sell designs.
 
 Features:
